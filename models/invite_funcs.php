@@ -102,6 +102,36 @@ function createInvite($user_id,$email,$message,$token)
 }
 
 
+function decreaseInvite($user) 
+{
+	global $loggedInUser, $db_table_prefix;
+	if($loggedInUser == NULL){
+		return false;//if $loggedInUser is null, we don't need to check the database. KISS
+	}else{
+        try {
+       
+           $db = pdoConnect();
+            $sqlVars = array();        
+        	$query ="Update  uf_user_invites  SET invitesLeft=InvitesLeft-1 WHERE userid=".$user ;  
+            $stmt = $db->prepare($query);
+            $stmt->execute($sqlVars);
+          
+        } catch (PDOException $e) {
+          addAlert("danger", "Oops, looks like our database encountered an error.");
+          error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+          return false;
+        } catch (ErrorException $e) {
+          addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+          return false;
+        } catch (RuntimeException $e) {
+          addAlert("danger", "Oops, looks like our server might have goofed.  If you're an admin, please check the PHP error logs.");
+          error_log("Error in " . $e->getFile() . " on line " . $e->getLine() . ": " . $e->getMessage());
+          return false;
+        }
+    }  
+}
+
+
 function validateToken($token)
 {
 	global $db_table_prefix;

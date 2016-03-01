@@ -128,6 +128,7 @@ if (($invitesLeft>0) & (!$userExist))
 		{
 			//Success, user details have been updated in the db now mail this information out.
 			$successes[] = lang("ACCOUNT_NEW_INVITATION_SENT");
+			$invitesLeft=decreaseInvite($user_id);
 			//addAlert("danger", "Your email has been sent!");
 		}
 	}	
